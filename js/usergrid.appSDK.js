@@ -628,7 +628,8 @@ apigee.ApiClient = (function () {
         } else {
           path = '?data='+data;
         }
-
+        //finally, clear out the request body
+        jsonObj = null;
       }
       xhr.open(method, path, true);
     }

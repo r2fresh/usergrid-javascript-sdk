@@ -614,7 +614,7 @@ apigee.ApiClient = (function () {
         var data = JSON.stringify(data)
         data = encodeURIComponent(data);
         //then append it to the query string
-        path += '&data='+data;
+        path += '&body='+data;
       }
       //clear out the request body
       jsonObj = null;
@@ -633,17 +633,7 @@ apigee.ApiClient = (function () {
         xhr.setRequestHeader("Authorization", "Bearer " + apigee.ApiClient.getToken());
         xhr.withCredentials = true;
       }
-    } /*else {
-      xhr = new ActiveXObject("MSXML2.XMLHTTP.3.0");
-      if ( (application_name != 'SANDBOX' && apigee.ApiClient.getToken()) || (getQueryType() == apigee.M && apigee.ApiClient.getToken())) {
-        if (path.indexOf("?")) {
-          path += '&access_token='+apigee.ApiClient.getToken();
-        } else {
-          path = '?access_token='+apigee.ApiClient.getToken();
-        }
-      }
-      xhr.open(method, path, true);
-    }*/
+    }
 
     // Handle response.
     xhr.onerror = function() {
@@ -654,44 +644,55 @@ apigee.ApiClient = (function () {
       //network error
       clearTimeout(timeout);
       console.log('API call failed at the network level.');
-      Query.callFailureCallback({'error':'error'});
+      //send back an error (best we can do with what ie gives back)
+      Query.callFailureCallback(response.innerText);
     };
-    xhr.onload = function() {
+    xhr.xdomainOnload = function (response) {
       //for timing, call end
       Query.setQueryEndTime();
       //for timing, log the total call time
       console.log('Call timing: ' + Query.getQueryTotalTime());
       //call completed
       clearTimeout(timeout);
+      //decode the response
+      response = JSON.parse(xhr.responseText);
+      //if a cursor was present, grab it
+      try {
+        var cursor = response.cursor || null;
+        Query.saveCursor(cursor);
+      }catch(e) {}
+      Query.callSuccessCallback(response);
+    };
+    xhr.onload = function(response) {
+      //for timing, call end
+      Query.setQueryEndTime();
+      //for timing, log the total call time
+      console.log('Call timing: ' + Query.getQueryTotalTime());
+      //call completed
+      clearTimeout(timeout);
+      //decode the response
       response = JSON.parse(xhr.responseText);
       if (xhr.status != 200 && !xD)   {
         //there was an api error
-        var error = response.error;
-        console.log('API call failed: (status: '+xhr.status+').' + error.type);
-
-        if ( (error.type == "auth_expired_session_token") ||
+        try {
+          var error = response.error;
+          console.log('API call failed: (status: '+xhr.status+').' + error.type);
+          if ( (error.type == "auth_expired_session_token") ||
               (error.type == "auth_missing_credentials")   ||
               (error.type == "auth_invalid")) {
             //this error type means the user is not authorized. If a logout function is defined, call it
             callLogoutCallback();
-            /*
-            if (apigee.console.logout) {
-              apigee.console.logout();
-              return;
-            }*/
-        }
+        }} catch(e){}
         //otherwise, just call the failure callback
-        Query.callFailureCallback(response);
+        Query.callFailureCallback(response.error_description);
         return;
       } else {
-        //success
-
         //query completed succesfully, so store cursor
         var cursor = response.cursor || null;
         Query.saveCursor(cursor);
         //then call the original callback
         Query.callSuccessCallback(response);
-      }
+     }
     };
     var timeout = setTimeout(function() { xhr.abort(); }, 15000);
 

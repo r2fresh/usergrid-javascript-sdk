@@ -612,9 +612,9 @@ apigee.ApiClient = (function () {
         //===Special IE code here===
         //specify the method
         if (path.indexOf("?")) {
-          path += '&verb_override='+method;
+          path += '&verb='+method;
         } else {
-          path = '?verb_override='+method;
+          path = '?verb='+method;
         }
         //then always do a post
         method = "POST";

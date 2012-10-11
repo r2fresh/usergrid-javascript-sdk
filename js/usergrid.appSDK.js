@@ -609,10 +609,30 @@ apigee.ApiClient = (function () {
         } else {
           path = '?access_token='+apigee.ApiClient.getToken();
         }
+        //===Special IE code here===
+        //specify the method
+        if (path.indexOf("?")) {
+          path += '&verb_override='+method;
+        } else {
+          path = '?verb_override='+method;
+        }
+        //then always do a post
+        method = "POST";
+
+        //next, stringify the request body
+        var data = JSON.stringify(Query.getJsonObj() )
+        data = encodeURIComponent(data);
+        //then append it to the query string
+        if (path.indexOf("?")) {
+          path += '&data='+data;
+        } else {
+          path = '?data='+data;
+        }
+
       }
       xhr.open(method, path, true);
     }
-    else if (xM)
+    else
     {
       xhr = new XMLHttpRequest();
       xhr.open(method, path, true);
@@ -620,7 +640,7 @@ apigee.ApiClient = (function () {
         xhr.setRequestHeader("Authorization", "Bearer " + apigee.ApiClient.getToken());
         xhr.withCredentials = true;
       }
-    } else {
+    } /*else {
       xhr = new ActiveXObject("MSXML2.XMLHTTP.3.0");
       if ( (application_name != 'SANDBOX' && apigee.ApiClient.getToken()) || (getQueryType() == apigee.M && apigee.ApiClient.getToken())) {
         if (path.indexOf("?")) {
@@ -630,7 +650,7 @@ apigee.ApiClient = (function () {
         }
       }
       xhr.open(method, path, true);
-    }
+    }*/
 
     // Handle response.
     xhr.onerror = function() {

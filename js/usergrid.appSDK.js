@@ -603,35 +603,27 @@ apigee.ApiClient = (function () {
     if(xD)
     {
       xhr = new window.XDomainRequest();
-      if ( (application_name != 'SANDBOX' && apigee.ApiClient.getToken()) || (getQueryType() == apigee.M && apigee.ApiClient.getToken())) {
-        if (path.indexOf("?")) {
-          path += '&access_token='+apigee.ApiClient.getToken();
-        } else {
-          path = '?access_token='+apigee.ApiClient.getToken();
-        }
-        //===Special IE code here===
-        //specify the method
-        if (path.indexOf("?")) {
-          path += '&verb='+method;
-        } else {
-          path = '?verb='+method;
-        }
-        //then always do a post
-        method = "GET";
-
-        //next, stringify the request body
-        var data = JSON.stringify(Query.getJsonObj() )
+      //===Special IE code here===
+      //specify the method
+      path += '?verb='+method;
+      //then always do a post
+      method = "GET";
+      //next, stringify the request body
+      var data = Query.getJsonObj();
+      if (data) {
+        var data = JSON.stringify(data)
         data = encodeURIComponent(data);
         //then append it to the query string
-        if (path.indexOf("?")) {
-          path += '&data='+data;
-        } else {
-          path = '?data='+data;
-        }
-        //finally, clear out the request body
-        jsonObj = null;
+        path += '&data='+data;
       }
-      xhr.open(method, path, true);
+      //clear out the request body
+      jsonObj = null;
+      //finally, append the token
+      if (getQueryType() == apigee.M && apigee.ApiClient.getToken()) {
+        path += '&access_token='+apigee.ApiClient.getToken();
+      }
+      //===End Special IE code here===
+      xhr.open(method, path);
     }
     else
     {

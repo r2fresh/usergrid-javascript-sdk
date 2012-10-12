@@ -605,19 +605,19 @@ apigee.ApiClient = (function () {
       xhr = new window.XDomainRequest();
       //===Special IE code here===
       //specify the method
-      path += '?verb='+method;
-      //then always do a post
+      path += '?_method='+method;
+      //then always do a get
       method = "GET";
       //next, stringify the request body
-      var data = Query.getJsonObj();
-      if (data) {
-        var data = JSON.stringify(data)
-        data = encodeURIComponent(data);
-        //then append it to the query string
-        path += '&body='+data;
-      }
+      //var data = Query.getJsonObj();
+      //if (data) {
+      //  var data = JSON.stringify(data)
+      //  data = encodeURIComponent(data);
+      //  //then append it to the query string
+      //  path += '&body='+data;
+      //}
       //clear out the request body
-      jsonObj = null;
+      //jsonObj = null;
       //finally, append the token
       if (getQueryType() == apigee.M && apigee.ApiClient.getToken()) {
         path += '&access_token='+apigee.ApiClient.getToken();

@@ -605,23 +605,30 @@ apigee.ApiClient = (function () {
       xhr = new window.XDomainRequest();
       //===Special IE code here===
       //specify the method
-      path += '?_method='+method;
+      if ( method == "GET"  || method == 'DELETE') {
+        // There is already a cache buster in the path
+        path += '\&method\='+method;
+      } else {
+        // This will be the first arg
+        path += '\?method\='+method;
+      }
       //then always do a get
-      method = "POST";
+      method = "GET";
       //next, stringify the request body
-      //var data = Query.getJsonObj();
-      //if (data) {
-      //  var data = JSON.stringify(data)
-      //  data = encodeURIComponent(data);
-      //  //then append it to the query string
-      //  path += '&body='+data;
-      //}
+      var data = Query.getJsonObj();
+      if (data) {
+        var data = JSON.stringify(data)
+        data = encodeURIComponent(data);
+        //then append it to the query string
+        path += '&body='+data;
+      }
       //clear out the request body
-      //jsonObj = null;
+      jsonObj = null;
       //finally, append the token
       if (getQueryType() == apigee.M && apigee.ApiClient.getToken()) {
-        path += '&access_token='+apigee.ApiClient.getToken();
+        path += '\&access_token\='+apigee.ApiClient.getToken();
       }
+      
       //===End Special IE code here===
       xhr.open(method, path);
     }

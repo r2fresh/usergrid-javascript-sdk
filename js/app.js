@@ -31,7 +31,7 @@ $(document).ready(function () {
    //first set the org / app path (must be orgname / appname or org id / app id - can't mix names and uuids!!)
    apigee.ApiClient.init('Apigee', 'sandbox');
 
-   apigee.ApiClient.setApiUrl('http://nest-test.apigee.net/');
+   apigee.ApiClient.setApiUrl('http://nest-prod.apigee.net/');
    //apigee.ApiClient.setApiUrl('http://api.usergrid.com/');
    
    //bind the show buttons

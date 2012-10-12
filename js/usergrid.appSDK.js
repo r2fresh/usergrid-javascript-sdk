@@ -607,7 +607,7 @@ apigee.ApiClient = (function () {
       //specify the method
       path += '?_method='+method;
       //then always do a get
-      method = "GET";
+      method = "POST";
       //next, stringify the request body
       //var data = Query.getJsonObj();
       //if (data) {

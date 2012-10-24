@@ -652,7 +652,7 @@ apigee.ApiClient = (function () {
       clearTimeout(timeout);
       console.log('API call failed at the network level.');
       //send back an error (best we can do with what ie gives back)
-      Query.callFailureCallback(response.innerText);
+      Query.callFailureCallback(xhr.responseText);
     };
     xhr.xdomainOnload = function (response) {
       //for timing, call end

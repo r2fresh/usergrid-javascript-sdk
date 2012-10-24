@@ -625,7 +625,7 @@ apigee.ApiClient = (function () {
       //clear out the request body
       jsonObj = null;
       //finally, append the token
-      if (getQueryType() == apigee.M && apigee.ApiClient.getToken()) {
+      if (apigee.ApiClient.getToken()) {
         path += '\&access_token\='+apigee.ApiClient.getToken();
       }
       

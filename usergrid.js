@@ -233,7 +233,7 @@ Usergrid.Client.prototype.createGroup = function(options, callback) {
   group.fetch(function(err, data){
     var okToSave = (err && 'service_resource_not_found' === data.error || 'no_name_specified' === data.error || 'null_pointer' === data.error) || (!err && getOnExist);
     if (okToSave) {
-      group.save(function(err, data){
+      group.save(function(err){
         if (typeof(callback) === 'function') {
           callback(err, group);
         }
@@ -283,7 +283,7 @@ Usergrid.Client.prototype.createEntity = function (options, callback) {
     var okToSave = ( (err && 'service_resource_not_found' === data.error) || 'no_name_specified' === data.error || 'null_pointer' === data.error) || (!err && getOnExist);
     if(okToSave) {
       entity.set(options.data); //add the data again just in case
-      entity.save(function(err, data) {
+      entity.save(function(err) {
         if (typeof(callback) === 'function') {
           callback(err, entity);
         }
@@ -336,7 +336,7 @@ Usergrid.Client.prototype.getEntity = function (options, callback) {
     data:options
   }
   var entity = new Usergrid.Entity(options);
-  entity.fetch(function(err, data) {
+  entity.fetch(function(err) {
     if (typeof(callback) === 'function') {
       callback(err, entity);
     }
@@ -356,7 +356,7 @@ Usergrid.Client.prototype.getEntity = function (options, callback) {
 */
 Usergrid.Client.prototype.createCollection = function (options, callback) {
   options.client = this;
-  var collection = new Usergrid.Collection(options, function(err, data) {
+  var collection = new Usergrid.Collection(options, function(err) {
     if (typeof(callback) === 'function') {
       callback(err, collection);
     }
@@ -449,7 +449,7 @@ Usergrid.Client.prototype.createUserActivity = function (user, options, callback
     data:options
   }
   var entity = new Usergrid.Entity(options);
-  entity.save(function(err, data) {
+  entity.save(function(err) {
     if (typeof(callback) === 'function') {
       callback(err, entity);
     }
@@ -554,7 +554,7 @@ Usergrid.Client.prototype.getToken = function () {
  * @return {callback} callback(err, data)
  */
 Usergrid.Client.prototype.signup = function(username, password, email, name, callback) {
-  var self = this;
+  //var self = this;
   var options = {
     type:"users",
     username:username,
@@ -1671,7 +1671,7 @@ Usergrid.Collection.prototype.getPreviousPage = function (callback) {
  *  @constructor
  *  @param {object} options {client:client, data: {'key': 'value'}, path:'path'}
  */
-Usergrid.Group = function(options, callback) {
+Usergrid.Group = function(options) {
   this._path = options.path;
   this._list = [];
   this._client = options.client;
@@ -1892,7 +1892,7 @@ Usergrid.Group.prototype.createGroupActivity = function(options, callback){
     }
 
     var entity = new Usergrid.Entity(options);
-    entity.save(function(err, data) {
+    entity.save(function(err) {
       if (typeof(callback) === 'function') {
         callback(err, entity);
       }

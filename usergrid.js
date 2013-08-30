@@ -208,11 +208,11 @@ Usergrid.Client.prototype.request = function (options, callback) {
    var self = this;
    var qs = {};
    var assetURL = this.URI + '/' + this.orgName + '/' + this.appName + '/assets/' + uuid + '/data';
- 
+
    if (self.getToken()) {
      qs['access_token'] = self.getToken();
    }
- 
+
    //append params to the path
    var encoded_params = encodeParams(qs);
    if (encoded_params) {
@@ -1106,64 +1106,6 @@ Usergrid.Entity.prototype.fetch = function (callback) {
   });
 }
 
-/*
-Usergrid.Entity.prototype.fetch = function (callback) {
-  var type = this.get('type');
-  var self = this;
-
-  //if a uuid is available, use that, otherwise, use the name
-  if (this.get('uuid')) {
-    type += '/' + this.get('uuid');
-  } else {
-    if (type === 'users') {
-      if (this.get('username')) {
-        type += '/' + this.get('username');
-      } else {
-        if (typeof(callback) === 'function') {
-          var error = 'cannot fetch entity, no username specified';
-          if (self._client.logging) {
-            console.log(error);
-          }
-          return callback(true, error, self)
-        }
-      }
-    } else {
-      if (this.get('name')) {
-        type += '/' + encodeURIComponent(this.get('name'));
-      } else {
-        if (typeof(callback) === 'function') {
-          var error = 'cannot fetch entity, no name specified';
-          if (self._client.logging) {
-            console.log(error);
-          }
-          return callback(true, error, self)
-        }
-      }
-    }
-  }
-  var options = {
-    method:'GET',
-    endpoint:type
-  };
-  this._client.request(options, function (err, data) {
-    if (err && self._client.logging) {
-      console.log('could not get entity');
-    } else {
-      if (data.user) {
-        self.set(data.user);
-      } else if (data.entities) {
-        if (data.entities.length) {
-          var entity = data.entities[0];
-          self.set(entity);
-        }
-      }
-    }
-    if (typeof(callback) === 'function') {
-      callback(err, data, self);
-    }
-  });
-}
-*/
 /*
 *  deletes the entity from the database - will only delete
 *  if the object has a valid uuid

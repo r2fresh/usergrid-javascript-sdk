@@ -1528,7 +1528,7 @@ Usergrid.Collection.prototype.hasNextEntity = function () {
 */
 Usergrid.Collection.prototype.getNextEntity = function () {
   this._iterator++;
-  var hasNextElement = (this._iterator >= 0 && this._iterator <= this._list.length);
+  var hasNextElement = (this._iterator >= 0 && this._iterator < this._list.length);
   if(hasNextElement) {
     return this._list[this._iterator];
   }
@@ -1561,7 +1561,7 @@ Usergrid.Collection.prototype.getPrevEntity = function () {
    this._iterator--;
    var hasPreviousElement = (this._iterator >= 0 && this._iterator <= this._list.length);
    if(hasPreviousElement) {
-    return this.list[this._iterator];
+    return this._list[this._iterator];
    }
    return false;
 }
@@ -1631,6 +1631,8 @@ Usergrid.Collection.prototype.getNextPage = function (callback) {
     //empty the list
     this._list = [];
     this.fetch(callback);
+  } else {
+    callback(true);
   }
 }
 
@@ -1660,6 +1662,8 @@ Usergrid.Collection.prototype.getPreviousPage = function (callback) {
     //empty the list
     this._list = [];
     this.fetch(callback);
+  } else {
+    callback(true);
   }
 }
 
